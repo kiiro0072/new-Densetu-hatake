@@ -11,8 +11,9 @@ class Pos{
 function HitBox(x,y,dx,dy,px,py) {
   return ((x<px && dx >px && y<py && dy>py))
 }
-//グローバル変数を定義
-var Gold = 100;
+//グローバル変数を定義]
+var ShopKey = 0;
+var Gold = 150;
 var CameraX = 0;
 var Item_Int = [0,0,0,0,0,0,0,0,0]
 var Item_Type = [0,0,0,0,0,0,0,0,0]
@@ -30,6 +31,11 @@ var screnn = 0;
 var Item = 1;
 var Mx = 0;
 var My = 0;
+var quote = "";
+var shopItem = [
+  ["a","b"],
+  [100,50],
+]
 var Blcok_List = [
   [0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
   [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
@@ -378,15 +384,6 @@ canvas.addEventListener("click", e => {
   }
     }
 }else{
-  if(HitBox(0+CameraX,500,128,628,mX,mY)){
-   for (let i = 0; i < 64; i++) {
-     addItems("a")
-    
-   }
-    }
-    if(HitBox(200+CameraX,500,328,628,mX,mY)){
-        addItems("b")
-}
 }})
 function keypress_ivent(e) {
   if(screnn == 0){
@@ -440,6 +437,7 @@ function keypress_ivent(e) {
                           break;
                           case "m":
                             screnn = 1;
+                            quote = "いらっしゃい"
                             break
   }
 }else{
@@ -447,10 +445,36 @@ function keypress_ivent(e) {
     case "m":
       screnn = 0;
       break;
-  
+      case "w":
+      ShopKey++;
+      break;
+      case "s":
+        ShopKey--;
+        break;
     default:
       break;
+      case "q":
+        if(quote == "いらっしゃい"){
+          quote = "";
+          break;
+        }
+        if(quote == ""){
+        console.log(shopItem[1][(0-ShopKey%2)+1])
+        if( Gold >= (shopItem[1][(0-ShopKey%2)+1]-1)){
+          Gold = Gold - shopItem[1][(0-ShopKey%2)+1]
+          if(shopItem[0][(0-ShopKey%2)+1] == "a"){
+            for (let i = 0; i < 64; i++) {
+              addItems("a")
+              
+            }
+          }else{
+            addItems(shopItem[0][(0-ShopKey%2)+1])
+          }
+        }
+      }
+        break;
   }
+  
 }
 	return false; 
 }
@@ -479,10 +503,6 @@ function removeItem(Item) {
   }else{
     Item_Int[Item_Type.indexOf(Item)] -= 1;
   }
-}
-for (let i = 0; i < 65; i++) {
-  addItems("a")
-  
 }
 function main() {
   if(screnn == 0){
@@ -513,7 +533,7 @@ IMAY =+ Math.round((IY+Camera.y+300)/65);
       }else{
         ctx.drawImage(img,i*90+380,546,64,64)
       }
-      ctx.font = "32px serif";
+      ctx.font = "32px Osaka-Mono";
       if(Item_Type[i] == "a"){
       ctx.fillText(1,i*90+380,640)
       }else{
@@ -527,23 +547,40 @@ IMAY =+ Math.round((IY+Camera.y+300)/65);
   ctx.fillRect(0,0,10000,1000)
   var shopItem = [
     ["a","b"],
-    [100,50],
-    ["./Image/Item/100.png","./Image/Item/50.png"]
+    [100,100],
   ]
+  console.log(quote)
+  if(quote == ""){
+  var shopName =
+    ["くわ","にんじん"]
   ctx.fillStyle = "black"
-  ctx.fillRect(0,0,10000,1000)
+  ctx.fillRect(0,400,1250,450)
+  ctx.fillStyle = "rgba(200,200,200, 1)";
+  ctx.fillRect(25,425,1200,400)
+  ctx.font = "bold 48px Osaka-Mono";
   for (let i = 0; i < 2; i++) {
-    ctx.fillStyle = "white"
-    ctx.fillRect(i*200,500,128,128)
-    var img = new Image()
-    img.src = shopItem[2][i];
-    ctx.drawImage(img,i*200+CameraX,500,128,128)
-    ctx.font = "64px serif";
-    ctx.fillText(shopItem[1][i]+"G",i*200,700)
+  if((ShopKey%2) == i){
+    ctx.fillStyle = "black"
+  }else{
+    ctx.fillStyle = "rgba(255,255,0, 1)";
+    ctx.fillRect(50,500+i*64-32,32,32)
+    ctx.fillStyle = "black"
   }
-  ctx.fillStyle = "white"
-  ctx.fillRect(0,0,10000,450)
+  ctx.fillText(shopItem[1][i],300,500+i*64)
+  ctx.fillText(shopName[i],100,500+i*64)
 }
+}else{
+  ctx.fillStyle = "black"
+  ctx.fillRect(0,400,1250,450)
+  ctx.fillStyle = "rgba(200,200,200, 1)";
+  ctx.fillRect(25,425,1200,400)
+  ctx.font = "bold 64px Osaka-Mono";
+  ctx.fillStyle = "black"
+  ctx.fillText(quote,100,550)
+}
+}
+ctx.font = "bold 64px Osaka-Mono";
+ctx.fillText(Gold+"G",50,650)
 	requestAnimationFrame(main);
 }
 requestAnimationFrame(main)
