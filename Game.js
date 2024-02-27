@@ -13,6 +13,7 @@ function HitBox(x,y,dx,dy,px,py) {
 }
 //グローバル変数を定義]
 var ShopKey = 0;
+var Blok = false;
 var Gold = 150;
 var CameraX = 0;
 var Item_Int = [0,0,0,0,0,0,0,0,0]
@@ -35,9 +36,11 @@ var quote = "";
 var shopItem = [
   ["a","b"],
   [100,50],
+  ["a","b"],
+  [50,100],
 ]
 var Blcok_List = [
-  [0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
   [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
   [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
   [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
@@ -314,7 +317,7 @@ function World() {
         if(Blcok_List[y][x] == 2){
           if(AAA[y][x] == 0){
             Blcok_List[y][x] = 3;
-            AAA[y][x] = 100
+            AAA[y][x] = 500
           }
           
           AAA[y][x] = AAA[y][x]-1
@@ -322,13 +325,12 @@ function World() {
     if(Blcok_List[y][x] == 3){
       if(AAA[y][x] == 0){
         Blcok_List[y][x] = 4;
-        AAA[y][x] = 100
+        AAA[y][x] = 500
       }
       
       AAA[y][x] = AAA[y][x]-1
 }
   }catch{
-    console.log("ワールドの外です")
   }
 }
   }
@@ -355,23 +357,14 @@ function PlayerAction() {
   ctx.drawImage(img,Player.x-Camera.x,Player.y-Camera.y,64,64)
 }
 document.addEventListener('keypress', keypress_ivent);
-canvas.addEventListener("click", e => {
+canvas.addEventListener("mousedown", e => {
   if(screnn == 0){
   // マウスの座標をCanvas内の座標とあわせるため
   click = true;
-  if( Blcok_List[IMAY][IMA] == 4){
-    Blcok_List[IMAY][IMA] = 1
-    for (let i = 0; i < 2; i++) {
-      addItems("b")
-      AAA[IMAY][IMA] = 100
-    }
-  }
   if(Item_Type[Item-1] == "a"){
-    if( Blcok_List[IMAY][IMA] == 0){
   Blcok_List[IMAY][IMA] = 1
   for (let i = 0; i < 8; i++) {
     removeItem("a")
-  }
   }
   }
   if(Item_Type[Item-1] == "b"){
@@ -379,7 +372,7 @@ canvas.addEventListener("click", e => {
     Blcok_List[IMAY][IMA] = 2
     for (let i = 0; i < 1; i++) {
       removeItem("b")
-      AAA[IMAY][IMA] = 100
+      AAA[IMAY][IMA] = 500
     }
   }
     }
@@ -403,8 +396,6 @@ function keypress_ivent(e) {
       case "s":
         Speed.y++;
         break;
-        case "e":
-          break
       case "1":
         Item = 1;
         break;
@@ -439,6 +430,23 @@ function keypress_ivent(e) {
                             screnn = 1;
                             quote = "いらっしゃい"
                             break
+                            case "q":
+                              if( Blcok_List[IMAY][IMA] == 4){
+                                Blcok_List[IMAY][IMA] = 1
+                                for (let i = 0; i < 2; i++) {
+                                  addItems("b")
+                                  AAA[IMAY][IMA] = 100
+                                  Blok = true
+                                }
+                              }
+                              break;
+                              case "e":
+                                if(!(Item_Type[Item-1] == 0)){
+                                Gold = Gold+shopItem[3][Item_Type[Item]]*0.8;
+                                console.log(shopItem[2][Item_Type[Item]+1])
+                                removeItem(shopItem[2][Item_Type[Item]+1])
+                            }
+                                break;
   }
 }else{
   switch (e.key) {
@@ -458,16 +466,22 @@ function keypress_ivent(e) {
           quote = "";
           break;
         }
+        if(quote == "お買い上げありがとうございます！"){
+          quote = "";
+          break;
+        }
         if(quote == ""){
-        console.log(shopItem[1][(0-ShopKey%2)+1])
-        if( Gold >= (shopItem[1][(0-ShopKey%2)+1]-1)){
-          Gold = Gold - shopItem[1][(0-ShopKey%2)+1]
-          if(shopItem[0][(0-ShopKey%2)+1] == "a"){
+        console.log(shopItem[1][(ShopKey%2)]-1)
+        if( Gold >= (shopItem[1][((ShopKey+1)%2)]-1)){
+          Gold = Gold - shopItem[1][((ShopKey+1)%2)]
+          if(shopItem[0][((ShopKey+1)%2)] == "a"){
             for (let i = 0; i < 64; i++) {
               addItems("a")
-              
+              console.log("a")
             }
+            quote = "お買い上げありがとうございます！"
           }else{
+            quote = "お買い上げありがとうございます！"
             addItems(shopItem[0][(0-ShopKey%2)+1])
           }
         }
@@ -515,7 +529,6 @@ IMAY =+ Math.round((IY+Camera.y+300)/65);
     ctx.fillRect(360-10,506,9*90+20,190)
     ctx.fillStyle = "black"
     ctx.fillRect(360,526,9*90,140)
-    console.log(Item_Type)
     for (let i = 0; i < 9; i++) {
 
       ctx.fillStyle = "white"
@@ -545,9 +558,12 @@ IMAY =+ Math.round((IY+Camera.y+300)/65);
 }else{
   ctx.fillStyle = "white"
   ctx.fillRect(0,0,10000,1000)
+  var Imege = new Image();
+  Imege.src = "./Image/Mob/鍛冶屋.png"
+  ctx.drawImage(Imege,0,0,450,450)
   var shopItem = [
     ["a","b"],
-    [100,100],
+    [100,50],
   ]
   console.log(quote)
   if(quote == ""){
@@ -568,6 +584,7 @@ IMAY =+ Math.round((IY+Camera.y+300)/65);
   }
   ctx.fillText(shopItem[1][i],300,500+i*64)
   ctx.fillText(shopName[i],100,500+i*64)
+  ctx.fillStyle = "black"
 }
 }else{
   ctx.fillStyle = "black"
@@ -578,9 +595,12 @@ IMAY =+ Math.round((IY+Camera.y+300)/65);
   ctx.fillStyle = "black"
   ctx.fillText(quote,100,550)
 }
+ctx.fillRect(0,600,10000,1000)
+ctx.fillStyle = "white"
 }
 ctx.font = "bold 64px Osaka-Mono";
 ctx.fillText(Gold+"G",50,650)
+Blok = false;
 	requestAnimationFrame(main);
 }
 requestAnimationFrame(main)
